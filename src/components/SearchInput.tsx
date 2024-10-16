@@ -44,7 +44,6 @@ const SearchInput: FC<IProps> = ({ setLat, setLong }) => {
             </div>
 
             <div className="autocomplete-dropdown-container">
-              {loading && <div>Loading...</div>}
               {suggestions.map((suggestion) => {
                 const className = suggestion.active
                   ? "suggestion-item--active"
