@@ -24,7 +24,7 @@ const SearchInput: FC<IProps> = ({ setLat, setLong }) => {
   };
 
   return (
-    <div className="fixed top-[80px] left-0 z-[9999] flex items-center">
+    <div className="fixed top-[90px] left-4 z-[9999] flex items-center">
       <PlacesAutocomplete
         value={address}
         onChange={setAddress}
