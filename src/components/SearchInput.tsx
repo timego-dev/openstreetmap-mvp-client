@@ -36,7 +36,7 @@ const SearchInput: FC<IProps> = ({ setLat, setLong }) => {
               <input
                 {...getInputProps({
                   className:
-                    "py-2 pl-4 pr-8 focus:outline-none rounded-md min-w-[300px]",
+                    "py-2 pl-4 pr-8 focus:outline-none rounded-md w-[350px]",
                   placeholder: "Search Address",
                 })}
               />
@@ -60,7 +60,12 @@ const SearchInput: FC<IProps> = ({ setLat, setLong }) => {
                       style,
                     })}
                   >
-                    <div className="px-4 py-2">{suggestion.description}</div>
+                    <div
+                      className="px-4 py-2 w-[350px] truncate"
+                      title={suggestion.description}
+                    >
+                      {suggestion.description}
+                    </div>
                   </div>
                 );
               })}
