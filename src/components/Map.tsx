@@ -15,7 +15,7 @@ const RenderControl: FC<IProps> = ({ lat, long }) => {
           lat,
           lng: long,
         },
-        20
+        15
       );
     }
   }, [map, lat, long]);
@@ -27,7 +27,7 @@ const RenderMap: FC<IProps> = ({ lat, long }) => {
     <MapContainer
       className="markercluster-map"
       center={[lat, long]}
-      zoom={20}
+      zoom={15}
       maxZoom={100}
       style={{ width: "100vw", height: "100vh" }}
     >
