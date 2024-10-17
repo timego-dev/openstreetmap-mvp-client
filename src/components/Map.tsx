@@ -1,5 +1,5 @@
 import { FC, useEffect } from "react";
-import { MapContainer, TileLayer, useMap } from "react-leaflet";
+import { MapContainer, Marker, TileLayer, useMap } from "react-leaflet";
 
 interface IProps {
   lat: number;
@@ -35,6 +35,7 @@ const RenderMap: FC<IProps> = ({ lat, long }) => {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
       />
+      <Marker position={[lat, long]}></Marker>
       <RenderControl lat={lat} long={long} />
     </MapContainer>
   );
