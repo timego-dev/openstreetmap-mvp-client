@@ -4,6 +4,8 @@ import Map from "./components/Map";
 import Header from "./components/Header";
 import SearchInput from "./components/SearchInput";
 import { useSearchParams } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   const [lat, setLat] = useState<number>(51);
@@ -31,8 +33,9 @@ function App() {
   return (
     <div className="relative" style={{ width: "100vw", height: "100vh" }}>
       <Header />
-      <SearchInput setLat={setLat} setLong={setLong} />
+      <SearchInput setLat={setLat} setLong={setLong} lat={lat} long={long} />
       <Map lat={lat} long={long} />
+      <ToastContainer />
     </div>
   );
 }

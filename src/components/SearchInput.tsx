@@ -1,33 +1,63 @@
-import { FC, useState } from "react";
+import { FC, useCallback, useState } from "react";
 import { IoSearch } from "react-icons/io5";
 import PlacesAutocomplete, {
   geocodeByAddress,
   getLatLng,
 } from "react-places-autocomplete";
+import agent from "../config/agent";
+import * as _ from "lodash";
+import { toast } from "react-toastify";
 
 interface IProps {
   setLat: (value: number) => void;
   setLong: (value: number) => void;
+  lat: number;
+  long: number;
 }
 
-const SearchInput: FC<IProps> = ({ setLat, setLong }) => {
+const SearchInput: FC<IProps> = ({ setLat, setLong, lat, long }) => {
   const [address, setAddress] = useState("");
+  const [notFound, setNotFound] = useState(false);
+  const [displayResult, setDisplayResult] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const handleSaveAddress = useCallback(
+    _.debounce(async () => {
+      setLoading(true);
+      await agent.post("/history", {
+        lat,
+        long,
+        name: address,
+        timestamp: new Date(),
+      });
+      toast("Successfully saved address", { type: "success" });
+      setLoading(false);
+    }, 2000),
+    [lat, long, address]
+  );
+
   const handleSelect = (address: string) => {
+    setDisplayResult(false);
+    setNotFound(false);
     setAddress(address);
     geocodeByAddress(address)
       .then((results) => getLatLng(results[0]))
-      .then((latLng) => {
+      .then(async (latLng) => {
+        setDisplayResult(true);
         setLat(latLng.lat);
         setLong(latLng.lng);
       })
-      .catch((error) => console.error("Error", error));
+      .catch((error) => setNotFound(true));
   };
 
   return (
-    <div className="fixed top-[90px] left-4 z-[9999] flex items-center">
+    <div className="fixed top-[90px] left-4 z-[9999]">
       <PlacesAutocomplete
         value={address}
-        onChange={setAddress}
+        onChange={(value) => {
+          setDisplayResult(false);
+          setAddress(value);
+        }}
         onSelect={handleSelect}
       >
         {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
@@ -72,6 +102,22 @@ const SearchInput: FC<IProps> = ({ setLat, setLong }) => {
           </div>
         )}
       </PlacesAutocomplete>
+      {displayResult ? (
+        <div className="bg-white p-4 w-[350px]">
+          <div className="text-xl font-semibold">Search result</div>
+          {notFound ? "No result found" : <div>{address}</div>}
+          <div className="mt-2 flex justify-center w-full">
+            <button
+              disabled={loading}
+              onClick={handleSaveAddress}
+              type="button"
+              className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+            >
+              Save Address
+            </button>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 };
