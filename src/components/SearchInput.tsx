@@ -12,21 +12,31 @@ import { IAddress } from "../@types/Address";
 interface IProps {
   setLat: (value: number) => void;
   setLong: (value: number) => void;
-  savedAddress: IAddress[];
+  setPage: (value: number) => void;
+  setTotal: (value: number) => void;
   setShowHistory: (value: boolean) => void;
+  setSavedAddress: (value: IAddress[]) => void;
+  savedAddress: IAddress[];
   showHistory: boolean;
   lat: number;
   long: number;
+  page: number;
+  total: number;
 }
 
 const SearchInput: FC<IProps> = ({
   setLat,
   setLong,
+  setSavedAddress,
+  setShowHistory,
   lat,
   long,
-  setShowHistory,
   savedAddress,
   showHistory,
+  page,
+  setPage,
+  setTotal,
+  total,
 }) => {
   const [address, setAddress] = useState("");
   const [notFound, setNotFound] = useState(false);
@@ -42,8 +52,10 @@ const SearchInput: FC<IProps> = ({
   useEffect(() => {
     if (showHistory) {
       setDisplayResult(false);
+    } else {
+      setPage(1);
     }
-  }, [showHistory]);
+  }, [setPage, showHistory]);
 
   const debounceSaved = _.debounce(async () => {
     setLoading(true);
@@ -83,6 +95,24 @@ const SearchInput: FC<IProps> = ({
     setLat(item.lat);
     setLong(item.long);
   };
+
+  const debounceFetch = _.debounce(async () => {
+    try {
+      const result = await agent.get(`/history?page=${page + 1}`);
+      setSavedAddress([...savedAddress, ...result.data.data]);
+      setTotal(result.data.total);
+      setPage(page + 1);
+      setShowHistory(true);
+    } catch (error: any) {
+      console.log(error);
+    } finally {
+    }
+  }, 200);
+
+  const handleFetchHistory = useCallback(
+    () => debounceFetch(),
+    [debounceFetch]
+  );
 
   return (
     <div className="fixed top-[90px] left-4 z-[9999]">
@@ -167,7 +197,9 @@ const SearchInput: FC<IProps> = ({
           <div className="text-xl font-semibold mb-2">Saved Address</div>
           <IoCloseOutline
             className="absolute top-2 right-2 text-xl cursor-pointer"
-            onClick={() => setShowHistory(false)}
+            onClick={() => {
+              setShowHistory(false);
+            }}
           />
           <div
             style={{ maxHeight: "calc(100vh - 300px)" }}
@@ -178,11 +210,21 @@ const SearchInput: FC<IProps> = ({
                 onClick={() => handleClichHistory(item)}
                 key={item.timestamp.toString()}
                 title={item.name}
-                className="w-[320px] hover:underline truncate block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white md:dark:text-blue-500 cursor-pointer"
+                className="w-[320px] hover:underline block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white md:dark:text-blue-500 cursor-pointer"
               >
                 {item.name}
               </div>
             ))}
+            {page < total ? (
+              <div
+                className="text-center w-[320px] hover:underline block py-2 px-3
+            text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700
+            md:p-0 dark:text-white md:dark:text-blue-500 cursor-pointer"
+                onClick={handleFetchHistory}
+              >
+                More ...
+              </div>
+            ) : null}
           </div>
         </div>
       ) : null}

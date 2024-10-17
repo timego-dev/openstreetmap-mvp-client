@@ -7,13 +7,21 @@ import agent from "../config/agent";
 interface IProps {
   setSavedAddress: (value: IAddress[]) => void;
   setShowHistory: (value: boolean) => void;
+  page: number;
+  setTotal: (value: number) => void;
 }
 
-const Header: FC<IProps> = ({ setSavedAddress, setShowHistory }) => {
+const Header: FC<IProps> = ({
+  setSavedAddress,
+  setShowHistory,
+  page,
+  setTotal,
+}) => {
   const debounceFetch = debounce(async () => {
     try {
-      const result = await agent.get("/history");
-      setSavedAddress(orderBy(result.data, "timestamp", "desc"));
+      const result = await agent.get(`/history?page=${page}`);
+      setSavedAddress(orderBy(result.data.data, "timestamp", "desc"));
+      setTotal(result.data.total);
       setShowHistory(true);
     } catch (error: any) {
       console.log(error);

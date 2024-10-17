@@ -14,6 +14,8 @@ function App() {
   const [getSearchParams, setSearchParams] = useSearchParams();
   const [savedAddress, setSavedAdress] = useState<IAddress[]>([]);
   const [showHistory, setShowHistory] = useState(false);
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
   useEffect(() => {
     const currentLat = getSearchParams.get("lat");
     const currentLong = getSearchParams.get("lng");
@@ -37,6 +39,8 @@ function App() {
       <Header
         setSavedAddress={setSavedAdress}
         setShowHistory={setShowHistory}
+        page={page}
+        setTotal={setTotal}
       />
       <SearchInput
         setLat={setLat}
@@ -46,6 +50,11 @@ function App() {
         savedAddress={savedAddress}
         showHistory={showHistory}
         setShowHistory={setShowHistory}
+        page={page}
+        setPage={setPage}
+        setTotal={setTotal}
+        total={total}
+        setSavedAddress={setSavedAdress}
       />
       <Map lat={lat} long={long} />
       <ToastContainer />
