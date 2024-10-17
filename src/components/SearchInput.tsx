@@ -24,15 +24,20 @@ const SearchInput: FC<IProps> = ({ setLat, setLong, lat, long }) => {
   const handleSaveAddress = useCallback(
     _.debounce(async () => {
       setLoading(true);
-      await agent.post("/history", {
-        lat,
-        long,
-        name: address,
-        timestamp: new Date(),
-      });
-      toast("Successfully saved address", { type: "success" });
-      setLoading(false);
-    }, 2000),
+      try {
+        await agent.post("/history", {
+          lat,
+          long,
+          name: address,
+          timestamp: new Date(),
+        });
+        toast("Successfully saved address", { type: "success" });
+      } catch (error: any) {
+        toast(error.response.data.message, { type: "error" });
+      } finally {
+        setLoading(false);
+      }
+    }, 200),
     [lat, long, address]
   );
 
