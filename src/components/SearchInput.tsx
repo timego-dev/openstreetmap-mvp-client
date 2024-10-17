@@ -122,56 +122,72 @@ const SearchInput: FC<IProps> = ({
           setDisplayResult(false);
           setShowHistory(false);
           setAddress(value);
+          setNotFound(false);
         }}
         onSelect={handleSelect}
+        shouldFetchSuggestions={true}
+        onError={(status, clearSuggestion) => {
+          clearSuggestion();
+        }}
       >
-        {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
-          <div className="w-full">
-            <div className="relative flex items-center w-full">
-              <input
-                {...getInputProps({
-                  className:
-                    "py-2 pl-4 pr-8 focus:outline-none rounded-md w-full md:w-[350px]",
-                  placeholder: "Search Address",
-                })}
-              />
-              <IoSearch className="absolute right-2" />
-            </div>
+        {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => {
+          return (
+            <div className="w-full">
+              <div className="relative flex items-center w-full md:w-[350px]">
+                <input
+                  {...getInputProps({
+                    className:
+                      "py-2 pl-4 pr-8 focus:outline-none rounded-md w-full md:w-[350px]",
+                    placeholder: "Search Address",
+                  })}
+                />
+                <IoSearch className="absolute right-2 z-30 cursor-pointer" />
+              </div>
 
-            <div className="autocomplete-dropdown-container">
-              {suggestions.map((suggestion) => {
-                const className = suggestion.active
-                  ? "suggestion-item--active"
-                  : "suggestion-item";
-                // inline style for demonstration purpose
-                const style = suggestion.active
-                  ? { backgroundColor: "#fafafa", cursor: "pointer" }
-                  : { backgroundColor: "#ffffff", cursor: "pointer" };
-                return (
-                  <div
-                    {...getSuggestionItemProps(suggestion, {
-                      className,
-                      style,
-                    })}
-                  >
-                    <div
-                      className="px-4 py-2 w-full md:w-[350px] truncate"
-                      title={suggestion.description}
-                    >
-                      {suggestion.description}
-                    </div>
-                  </div>
-                );
-              })}
+              {loading ? null : (
+                <div className="autocomplete-dropdown-container w-full md:w-[350px]">
+                  {suggestions.length
+                    ? suggestions.map((suggestion) => {
+                        const className = suggestion.active
+                          ? "suggestion-item--active"
+                          : "suggestion-item";
+                        // inline style for demonstration purpose
+                        const style = suggestion.active
+                          ? { backgroundColor: "#fafafa", cursor: "pointer" }
+                          : { backgroundColor: "#ffffff", cursor: "pointer" };
+                        return (
+                          <div
+                            {...getSuggestionItemProps(suggestion, {
+                              className,
+                              style,
+                            })}
+                            key={suggestion.placeId}
+                          >
+                            <div
+                              className="px-4 py-2 w-full md:w-[350px] truncate"
+                              title={suggestion.description}
+                            >
+                              {suggestion.description}
+                            </div>
+                          </div>
+                        );
+                      })
+                    : address && (
+                        <div className="suggestion-item bg-[#ffffff] px-4 py-2 w-full md:w-[350px]">
+                          No suggestion
+                        </div>
+                      )}
+                </div>
+              )}
             </div>
-          </div>
-        )}
+          );
+        }}
       </PlacesAutocomplete>
       {displayResult ? (
         <div className="bg-white p-4 w-full md:w-[350px] mt-4 rounded-md">
           <div className="text-xl font-semibold">Search result</div>
           {notFound ? (
-            "No result found"
+            `No result found for "${address}"`
           ) : (
             <Fragment>
               <div>
