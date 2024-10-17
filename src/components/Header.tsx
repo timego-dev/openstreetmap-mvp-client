@@ -35,7 +35,7 @@ const Header: FC<IProps> = ({
   );
 
   return (
-    <div className="fixed top-0 left-0 z-[9999] px-4 h-[80px] flex bg-white w-full gap-10 items-center">
+    <div className="fixed top-0 left-0 z-[9999] px-4 h-[80px] flex bg-white w-full gap-10 items-center md:justify-start justify-between">
       <div className="flex items-center gap-2">
         <img src={LogoImage} alt="" className="w-[32px] h-[32px]" />
         <div className="text-blue-500 font-semibold md:text-xl  text-md">

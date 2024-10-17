@@ -115,7 +115,7 @@ const SearchInput: FC<IProps> = ({
   );
 
   return (
-    <div className="fixed top-[90px] flex justify-center flex-col items-center md:justify-start md:items-start w-full md:left-4 z-[9999]">
+    <div className="fixed px-4 md:px-0 top-[90px] flex justify-center flex-col items-center md:justify-start md:items-start w-full md:left-4 z-[9999]">
       <PlacesAutocomplete
         value={address}
         onChange={(value) => {
@@ -126,12 +126,12 @@ const SearchInput: FC<IProps> = ({
         onSelect={handleSelect}
       >
         {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
-          <div>
-            <div className="relative flex items-center">
+          <div className="w-full">
+            <div className="relative flex items-center w-full">
               <input
                 {...getInputProps({
                   className:
-                    "py-2 pl-4 pr-8 focus:outline-none rounded-md w-[350px]",
+                    "py-2 pl-4 pr-8 focus:outline-none rounded-md w-full md:w-[350px]",
                   placeholder: "Search Address",
                 })}
               />
@@ -155,7 +155,7 @@ const SearchInput: FC<IProps> = ({
                     })}
                   >
                     <div
-                      className="px-4 py-2 w-[350px] truncate"
+                      className="px-4 py-2 w-full md:w-[350px] truncate"
                       title={suggestion.description}
                     >
                       {suggestion.description}
@@ -168,7 +168,7 @@ const SearchInput: FC<IProps> = ({
         )}
       </PlacesAutocomplete>
       {displayResult ? (
-        <div className="bg-white p-4 w-[350px] mt-4 rounded-md">
+        <div className="bg-white p-4 w-full md:w-[350px] mt-4 rounded-md">
           <div className="text-xl font-semibold">Search result</div>
           {notFound ? (
             "No result found"
@@ -193,7 +193,7 @@ const SearchInput: FC<IProps> = ({
       ) : null}
 
       {showHistory ? (
-        <div className="bg-white px-4 py-2 w-[350px] mt-4 rounded-md relative">
+        <div className="bg-white px-4 py-2 w-full md:w-[350px] mt-4 rounded-md relative">
           <div className="text-xl font-semibold mb-2">Saved Address</div>
           <IoCloseOutline
             className="absolute top-2 right-2 text-xl cursor-pointer"
