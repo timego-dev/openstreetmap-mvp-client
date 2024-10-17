@@ -42,6 +42,7 @@ const SearchInput: FC<IProps> = ({
   const [notFound, setNotFound] = useState(false);
   const [displayResult, setDisplayResult] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [selected, setSelected] = useState(false);
 
   useEffect(() => {
     if (displayResult) {
@@ -80,6 +81,7 @@ const SearchInput: FC<IProps> = ({
     setDisplayResult(false);
     setNotFound(false);
     setAddress(address);
+    setSelected(true);
     geocodeByAddress(address)
       .then((results) => getLatLng(results[0]))
       .then(async (latLng) => {
@@ -123,6 +125,7 @@ const SearchInput: FC<IProps> = ({
           setShowHistory(false);
           setAddress(value);
           setNotFound(false);
+          setSelected(false);
         }}
         onSelect={handleSelect}
         shouldFetchSuggestions={true}
@@ -172,7 +175,8 @@ const SearchInput: FC<IProps> = ({
                           </div>
                         );
                       })
-                    : address && (
+                    : address &&
+                      !selected && (
                         <div className="suggestion-item bg-[#ffffff] px-4 py-2 w-full md:w-[350px]">
                           No suggestion
                         </div>
