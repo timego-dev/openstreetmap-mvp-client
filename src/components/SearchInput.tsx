@@ -115,7 +115,7 @@ const SearchInput: FC<IProps> = ({
   );
 
   return (
-    <div className="fixed top-[90px] left-4 z-[9999]">
+    <div className="fixed top-[90px] flex justify-center flex-col items-center md:justify-start md:items-start w-full md:left-4 z-[9999]">
       <PlacesAutocomplete
         value={address}
         onChange={(value) => {
@@ -210,16 +210,14 @@ const SearchInput: FC<IProps> = ({
                 onClick={() => handleClichHistory(item)}
                 key={item.timestamp.toString()}
                 title={item.name}
-                className="w-[320px] hover:underline block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white md:dark:text-blue-500 cursor-pointer"
+                className="text-left w-[320px] hover:underline text-blue-500 cursor-pointer"
               >
                 {item.name}
               </div>
             ))}
             {page < total ? (
               <div
-                className="text-center w-[320px] hover:underline block py-2 px-3
-            text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700
-            md:p-0 dark:text-white md:dark:text-blue-500 cursor-pointer"
+                className="text-center w-[320px] hover:underline text-blue-500 cursor-pointer"
                 onClick={handleFetchHistory}
               >
                 More ...
