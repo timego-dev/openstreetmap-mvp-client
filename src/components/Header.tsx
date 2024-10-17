@@ -1,7 +1,7 @@
 import { FC, useCallback } from "react";
 import { IAddress } from "../@types/Address";
 import LogoImage from "../assets/icon/logo.png";
-import { debounce } from "lodash";
+import { debounce, orderBy } from "lodash";
 import agent from "../config/agent";
 
 interface IProps {
@@ -10,18 +10,20 @@ interface IProps {
 }
 
 const Header: FC<IProps> = ({ setSavedAddress, setShowHistory }) => {
+  const debounceFetch = debounce(async () => {
+    try {
+      const result = await agent.get("/history");
+      setSavedAddress(orderBy(result.data, "timestamp", "desc"));
+      setShowHistory(true);
+    } catch (error: any) {
+      console.log(error);
+    } finally {
+    }
+  }, 200);
+
   const handleFetchHistory = useCallback(
-    debounce(async () => {
-      try {
-        const result = await agent.get("/history");
-        setSavedAddress(result.data);
-        setShowHistory(true);
-      } catch (error: any) {
-        console.log(error);
-      } finally {
-      }
-    }, 200),
-    []
+    () => debounceFetch(),
+    [debounceFetch]
   );
 
   return (

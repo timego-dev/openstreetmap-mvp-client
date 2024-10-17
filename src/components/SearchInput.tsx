@@ -45,25 +45,24 @@ const SearchInput: FC<IProps> = ({
     }
   }, [showHistory]);
 
-  const handleSaveAddress = useCallback(
-    _.debounce(async () => {
-      setLoading(true);
-      try {
-        await agent.post("/history", {
-          lat,
-          long,
-          name: address,
-          timestamp: new Date(),
-        });
-        toast("Successfully saved address", { type: "success" });
-      } catch (error: any) {
-        toast(error.response.data.message, { type: "error" });
-      } finally {
-        setLoading(false);
-      }
-    }, 200),
-    [lat, long, address]
-  );
+  const debounceSaved = _.debounce(async () => {
+    setLoading(true);
+    try {
+      await agent.post("/history", {
+        lat,
+        long,
+        name: address,
+        timestamp: new Date(),
+      });
+      toast("Successfully saved address", { type: "success" });
+    } catch (error: any) {
+      toast(error.response.data.message, { type: "error" });
+    } finally {
+      setLoading(false);
+    }
+  }, 200);
+
+  const handleSaveAddress = useCallback(() => debounceSaved(), [debounceSaved]);
 
   const handleSelect = (address: string) => {
     setDisplayResult(false);
